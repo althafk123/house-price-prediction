@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HomeValue | House Price Prediction</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">Home<span>Value</span></a>
+        <span class="nav-label">ML HOUSE PRICE PREDICTION</span>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">SMART PROPERTY ESTIMATOR</p>
+
+                <h1>Find the estimated value of your <span>dream home.</span></h1>
+
+                <p class="subtitle">
+                    Enter your property details and let machine learning
+                    estimate its price in seconds.
+                </p>
+
+                <div class="feature-list">
+                    <span>✓ Quick prediction</span>
+                    <span>✓ Three ML algorithms compared</span>
+                    <span>✓ Kerala city options</span>
+                </div>
+            </div>
+
+            <div class="house-icon" aria-hidden="true">⌂</div>
+        </section>
+
+        <section class="content">
+            <div class="form-card">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">PROPERTY DETAILS</p>
+                        <h2>Tell us about the house</h2>
+                    </div>
+                    <span class="step">01 / 01</span>
+                </div>
+
+                <form method="POST" action="/" id="predictionForm">
+                    <div class="form-grid">
+                        <div class="field full-width">
+                            <label for="area">Built-up area (sq. ft.)</label>
+                            <input type="number" id="area" name="area"
+                                   min="500" max="3500" value="1500" required>
+                            <small>Enter a value from 500 to 3,500 sq. ft.</small>
+                        </div>
+
+                        <div class="field">
+                            <label for="bedrooms">Bedrooms</label>
+                            <select id="bedrooms" name="bedrooms" required>
+                                <option value="1">1 bedroom</option>
+                                <option value="2" selected>2 bedrooms</option>
+                                <option value="3">3 bedrooms</option>
+                                <option value="4">4 bedrooms</option>
+                                <option value="5">5 bedrooms</option>
+                                <option value="6">6 bedrooms</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="bathrooms">Bathrooms</label>
+                            <select id="bathrooms" name="bathrooms" required>
+                                <option value="1">1 bathroom</option>
+                                <option value="2" selected>2 bathrooms</option>
+                                <option value="3">3 bathrooms</option>
+                                <option value="4">4 bathrooms</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="floors">Number of floors</label>
+                            <select id="floors" name="floors" required>
+                                <option value="1" selected>1 floor</option>
+                                <option value="2">2 floors</option>
+                                <option value="3">3 floors</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="parking">Parking spaces</label>
+                            <select id="parking" name="parking" required>
+                                <option value="0">No parking</option>
+                                <option value="1" selected>1 space</option>
+                                <option value="2">2 spaces</option>
+                                <option value="3">3 spaces</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="location">Location</label>
+                            <select id="location" name="location" required>
+                                <option value="Kozhikode" selected>Kozhikode</option>
+                                <option value="Kochi">Kochi</option>
+                                <option value="Thiruvananthapuram">
+                                    Thiruvananthapuram
+                                </option>
+                                <option value="Thrissur">Thrissur</option>
+                                <option value="Kannur">Kannur</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="house_age">House age (years)</label>
+                            <input type="number" id="house_age"
+                                   name="house_age" min="0" max="40"
+                                   value="5" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="predictButton">
+                        <span>Predict House Price</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <p class="form-note">
+                        This tool provides an estimate, not an official
+                        property valuation.
+                    </p>
+                </form>
+            </div>
+
+            <aside class="result-card" id="result">
+                <div class="result-top">
+                    <span class="result-icon">₹</span>
+                    <span class="result-label">YOUR ESTIMATED PRICE</span>
+                </div>
+
+                {% if prediction is not none %}
+                    <div class="result-content">
+                        <p class="result-caption">Predicted property value</p>
+
+                        <h2 class="price">
+                            ₹{{ "{:,.0f}".format(prediction) }}
+                        </h2>
+
+                        <p class="lakhs">
+                            Approximately {{ "{:.2f}".format(prediction_lakhs) }}
+                            lakh rupees
+                        </p>
+
+                        <div class="success-message">
+                            <span>✓</span> Prediction completed!
+                        </div>
+                    </div>
+                {% elif error %}
+                    <div class="error-message">
+                        <strong>Unable to predict</strong>
+                        <p>{{ error }}</p>
+                    </div>
+                {% else %}
+                    <div class="empty-result">
+                        <div class="empty-house">⌂</div>
+                        <h2>Your result will appear here</h2>
+                        <p>
+                            Complete the property details and click the
+                            prediction button to see the estimated price.
+                        </p>
+                    </div>
+                {% endif %}
+
+                <div class="model-info">
+                    <span class="status-dot"></span>
+                    <div>
+                        <strong>Model used</strong>
+                        <p>{{ model_name }}</p>
+                    </div>
+                </div>
+
+                <p class="disclaimer">
+                    Educational demonstration using synthetic training data.
+                    The result is not a real market valuation.
+                </p>
+            </aside>
+        </section>
+    </main>
+
+    <footer>
+        <p>HomeValue · House Price Prediction ML Project</p>
+        <p>Built with Python, Flask &amp; Scikit-learn</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById("predictionForm");
+        const button = document.getElementById("predictButton");
+
+        form.addEventListener("submit", function () {
+            button.disabled = true;
+            button.innerHTML = "<span>Calculating...</span><span>⌛</span>";
+        });
+
+        // Scroll to the result after a prediction is returned.
+        const result = document.getElementById("result");
+        const hasResult = {{ 'true' if prediction is not none or error else 'false' }};
+
+        if (hasResult) {
+            result.classList.add("result-highlight");
+            setTimeout(() => {
+                result.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }, 150);
+        }
+    </script>
+</body>
+</html>
